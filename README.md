@@ -98,25 +98,71 @@ Access Control:  <br/>
 <br />
 <br />
 
-### 5️⃣ Configure PIM
-1. Navigate to **Entra ID → Roles and Administrators**  
-2. Select **Security Administrator** (or preferred role)  
-3. Under **Privileged Access (PIM)**, enable *eligible assignments*  
-4. Assign your test user as *eligible* for the role
+### 5️⃣ Configure Privileged Identity Management (PIM)
+1. Navigate to **Entra ID > Privileged Identity Management > Roles > Choose the Administrator role > Add Assignments**  
+2. Select **Security Administrator** (or preferred role)
+3. Add a user as member or add a group.
+4. Setting > Assignment Type as **Eligible**
+5. Assign your test user as *eligible* for the role
+6. Configure role settings for Privileged Role, On Activation, Require Microsoft Entra conditional Access Authentication context > Select the Authentication context created.
+7. Select the method of justification as **Require justification on activation** 
 
-Wait for process to complete (may take some time):  <br/>
-<img src="https://i.imgur.com/JL945Ga.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+PIM configuration:  <br/>
+<img src="https://imgur.com/erhJyHR.png" height="80%" width="80%" alt=/>
 <br />
 <br />
 
-### 6️⃣ Test the Scenario
+PIM configuration:  <br/>
+<img src="https://imgur.com/JbmY8D5.png" height="80%" width="80%" alt=/>
+<br />
+<br />
+
+### 6️⃣ Test the Scenario on User's side. 
 1. Sign in as the test user  
 2. Go to **Entra ID → Privileged Identity Management → My Roles**  
 3. Attempt to **activate** the `Security Administrator` role  
 4. Observe:  
-   - If signed in with password → prompt for TAP (stronger auth)  
+   - If signed in with password → prompt for Temporary Access Password(stronger auth)  
    - If signed in passwordlessly → activation succeeds  
 5. After TAP setup, activation completes successfully
+User tries to activate the Role  <br/>
+<img src="https://imgur.com/MQsdjUJ.png" height="80%" width="80%" alt=/>
+<br />
+<br />
+
+The user initially signed in with password + Authenticator (MFA).
+1. That satisfies “multi-factor” but not “passwordless” since a password was used.
+2. When the user tried to activate the PIM role, PIM invoked the authentication context.
+3. The conditional access policy tied to that context checked the authentication strength requirement and found: The current session used password + MFA, not passwordless.”
+4. Because of that, it prompted for one of the methods that qualify under the Authentication strength configured: Microsoft Authenticator phone sign-in or Temporary Access Pass
+
+PIM Requirement Request  <br/>
+<img src="https://imgur.com/CrJhPL6.png" height="80%" width="80%" alt=/>
+<br />
+<br />
+
+Since the user didn’t yet have a TAP configured and wasn’t set up for passwordless phone sign-in, Entra ID correctly said: “You need your admin to create a Temporary Access Pass.”
+
+PIM Requirement Request  <br/>
+<img src="https://imgur.com/LGxLMVC.png" height="80%" width="80%" alt=/>
+<br />
+<br />
+
+Admin creates TAP <br/>
+<img src="https://imgur.com/JmID93N.png" height="80%" width="80%" alt=/>
+<br />
+<br />
+
+USer Revalidates and Porvided TAP <br/>
+<img src="https://imgur.com/iCIRQRA.png" height="80%" width="80%" alt=/>
+<br />
+<br />
+
+Once admin created the TAP and the user retried, Entra ID accepted that TAP authentication as valid for passwordless authentication strength, allowing the PIM role activation.
+Validationg Is granted <br/>
+<img src="https://imgur.com/EdzD95p.png" height="80%" width="80%" alt=/>
+<br />
+<br />
 
 ## 📈 Result & Behavior
 > When users activate a privileged role, Conditional Access evaluates the **Authentication Context (`PIM-Auth`)**.  
@@ -136,6 +182,6 @@ Wait for process to complete (may take some time):  <br/>
 | **Conditional Access** | Designed and applied a CA policy linked to authentication context and custom strength |
 | **Authentication Strengths** | Defined passwordless and TAP methods to enforce strong MFA |
 | **PIM Integration** | Implemented step-up authentication for privileged role activation |
-| **Zero Trust Design** | Achieved context-aware access and strong identity assurance |<img width="641" height="415" alt="image" src="https://github.com/user-attachments/assets/6f50e86a-c2ae-43d9-96db-d88c2ec34373" />
+| **Zero Trust Design** | Achieved context-aware access and strong identity assurance |
 
 --!>
