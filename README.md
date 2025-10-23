@@ -1,12 +1,32 @@
-# Conditional-Access-PIM-Passwordless-Entra-ID-
+# 🔐 Conditional-Access-PIM-Passwordless-Entra-ID
 Lab demonstrating how Conditional Access, PIM, and PasswordLess authentication integrate in Microsoft 365 Entra ID to enforce Zero-Trust, step-up access control and protect privileged roles.
 
  ### [Repro Lab Demo](https://youtu.be/7eJexJVCqJo)
 
-<h2>Description</h2>
+## 📘 Repository Description
 Hands-on lab demonstrating how Conditional Access, Privileged Identity Management (PIM), and Passwordless authentication integrate within Microsoft Entra ID to deliver a Zero-Trust, step-up authentication experience.
 This scenario showcases end-to-end configuration from Authentication Strength and Authentication  Context creation to Conditional Access enforcement and PIM role activation proving practical understanding of Microsoft 365 E5 security architecture.
 <br />
+
+## 🎯 Lab Objective
+To configure a Conditional Access policy that enforces **passwordless authentication (via Microsoft Authenticator or Temporary Access Pass)** when a user attempts to **activate a privileged role through PIM**, ensuring sensitive operations require stronger authentication.
+
+## ⚙️ Key Configuration Steps
+1. **Create an Authentication Strength**  
+   - Include **Microsoft Authenticator phone sign-in** and **Temporary Access Pass (TAP)** as valid passwordless methods.
+
+2. **Create an Authentication Context**  
+   - Define a tag (e.g., `pim-auth-context`) to identify when stronger authentication should be applied.
+
+3. **Configure a Conditional Access Policy**  
+   - Target the Authentication Context created above.  
+   - Apply the **Authentication Strength** requiring passwordless methods.  
+   - Enforce this policy when users access or activate PIM-protected roles.
+
+4. **Set Up Privileged Identity Management (PIM)**  
+   - Assign a user as eligible for a privileged role (e.g., *Security Administrator*).  
+   - Require activation with justification and apply the step-up Conditional Access policy.  
+   - During activation, the policy triggers the passwordless requirement (TAP or Authenticator).
 
 
 <h2>Platforms & Tools Used</h2>
@@ -21,42 +41,97 @@ This scenario showcases end-to-end configuration from Authentication Strength an
 
 
 <h2>Labs walk-through:</h2>
+### 1️⃣ Configure Authentication Methods
+1. Go to **Entra ID → Protection → Authentication methods**  
+2. Enable:  
+   - **Microsoft Authenticator (Passwordless sign-in)**  
+   - **Temporary Access Pass (TAP)**  
+3. Target to all users or a test group
+
 
 <p align="center">
 Launch the utility: <br/>
 <img src="https://i.imgur.com/62TgaWL.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
+
+ ### 2️⃣ Create an Authentication Strength
+1. Navigate to **Authentication Strengths**  
+2. Create new strength: `Passwordless_Strength`  
+3. Include:  
+   - ✅ Microsoft Authenticator (Phone sign-in)  
+   - ✅ Temporary Access Pass (TAP)  
+4. Save and confirm 
+
 Select the disk:  <br/>
 <img src="https://i.imgur.com/tcTyMUE.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
+
+### 3️⃣ Create an Authentication Context
+1. Go to **Protection → Conditional Access → Authentication Contexts**  
+2. Create a new context named `PIM-Auth`  
+3. Add description and save  
+   *(Acts as a logical tag for the CA policy)*
+
 Enter the number of passes: <br/>
 <img src="https://i.imgur.com/nCIbXbg.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
+
+### 4️⃣ Create a Conditional Access Policy
+1. Go to **Conditional Access → Policies → New Policy**  
+2. Name: `PIM_Passwordless_Policy`  
+3. Assignments:  
+   - **Users**: Target your test user or group  
+   - **Cloud Apps**: Select *Authentication context → PIM-Auth*  
+4. Grant Controls:  
+   - Require **Authentication Strength → Passwordless_Strength**  
+5. Enable the policy
+
 Confirm your selection:  <br/>
 <img src="https://i.imgur.com/cdFHBiU.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
+
+### 5️⃣ Configure PIM
+1. Navigate to **Entra ID → Roles and Administrators**  
+2. Select **Security Administrator** (or preferred role)  
+3. Under **Privileged Access (PIM)**, enable *eligible assignments*  
+4. Assign your test user as *eligible* for the role
+
 Wait for process to complete (may take some time):  <br/>
 <img src="https://i.imgur.com/JL945Ga.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Sanitization complete:  <br/>
-<img src="https://i.imgur.com/K71yaM2.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br />
-Observe the wiped disk:  <br/>
-<img src="https://i.imgur.com/AeZkvFQ.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
 
-<!--
- ```diff
-- text in red
-+ text in green
-! text in orange
-# text in gray
-@@ text in purple (and bold)@@
-```
+### 6️⃣ Test the Scenario
+1. Sign in as the test user  
+2. Go to **Entra ID → Privileged Identity Management → My Roles**  
+3. Attempt to **activate** the `Security Administrator` role  
+4. Observe:  
+   - If signed in with password → prompt for TAP (stronger auth)  
+   - If signed in passwordlessly → activation succeeds  
+5. After TAP setup, activation completes successfully
+
+## 📈 Result & Behavior
+> When users activate a privileged role, Conditional Access evaluates the **Authentication Context (`PIM-Auth`)**.  
+>  
+> The CA policy enforces the **Passwordless_Strength**, requiring either passwordless sign-in or TAP.  
+>  
+> If initial sign-in used a password, Entra ID steps up the session to meet the passwordless requirement before role activation.  
+>  
+> The result is a secure, Zero Trust aligned design with **adaptive authentication** and **role-based protection**.
+
+---
+
+## 💡 Key Learnings
+
+| Area | Learning Outcome |
+|------|------------------|
+| **Conditional Access** | Designed and applied a CA policy linked to authentication context and custom strength |
+| **Authentication Strengths** | Defined passwordless and TAP methods to enforce strong MFA |
+| **PIM Integration** | Implemented step-up authentication for privileged role activation |
+| **Zero Trust Design** | Achieved context-aware access and strong identity assurance |<img width="641" height="415" alt="image" src="https://github.com/user-attachments/assets/6f50e86a-c2ae-43d9-96db-d88c2ec34373" />
+
 --!>
