@@ -48,23 +48,22 @@ To configure a Conditional Access policy that enforces **passwordless authentica
    - **Temporary Access Pass (TAP)**  
 3. Target to all users or a test group
 
-
 <p align="center">
-Launch the utility: <br/>
-<img src="https://i.imgur.com/62TgaWL.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+Authentication Method: <br/>
+<img src="https://imgur.com/bY42WaD.png" height="80%" width="80%" alt=/>
 <br />
 <br />
 
  ### 2️⃣ Create an Authentication Strength
 1. Navigate to **Authentication Strengths**  
-2. Create new strength: `Passwordless_Strength`  
+2. Create New Authentication Strength: `AuthStrenght_PSWLess_PIM`  
 3. Include:  
    - ✅ Microsoft Authenticator (Phone sign-in)  
-   - ✅ Temporary Access Pass (TAP)  
+   - ✅ Temporary Access Pass (One-time Use)  
 4. Save and confirm 
 
-Select the disk:  <br/>
-<img src="https://i.imgur.com/tcTyMUE.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+Create New Authentication Strenght:  <br/>
+<img src="https://imgur.com/buqnj7R.png" height="80%" width="80%" alt=/>
 <br />
 <br />
 
@@ -74,23 +73,28 @@ Select the disk:  <br/>
 3. Add description and save  
    *(Acts as a logical tag for the CA policy)*
 
-Enter the number of passes: <br/>
-<img src="https://i.imgur.com/nCIbXbg.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+New Authentication Context: <br/>
+<img src="https://imgur.com/z3x6zvK.png" height="80%" width="80%" alt=/>
 <br />
 <br />
 
 ### 4️⃣ Create a Conditional Access Policy
 1. Go to **Conditional Access → Policies → New Policy**  
-2. Name: `PIM_Passwordless_Policy`  
+2. Give it a Name
 3. Assignments:  
    - **Users**: Target your test user or group  
-   - **Cloud Apps**: Select *Authentication context → PIM-Auth*  
+   - **Target Resources**: Select *Authentication context → Choose the custom auth context created PIM-Auth*  
 4. Grant Controls:  
-   - Require **Authentication Strength → Passwordless_Strength**  
+   - Require **Authentication Strength → Choose the custom Strength Created**  
 5. Enable the policy
 
-Confirm your selection:  <br/>
-<img src="https://i.imgur.com/cdFHBiU.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+Traget Resources:  <br/>
+<img src="https://imgur.com/Il7nGzW.png" height="80%" width="80%" alt=/>
+<br />
+<br />
+
+Access Control:  <br/>
+<img src="https://imgur.com/ggzKtoQ.png" height="80%" width="80%" alt=/>
 <br />
 <br />
 
